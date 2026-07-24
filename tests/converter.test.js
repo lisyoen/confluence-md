@@ -33,7 +33,34 @@ const checks = [
     assert.match(markdown, /펼치기 안의 내용/);
     assert.match(markdown, /닫혀진 확장/);
   }],
-  ['absolute Confluence link', () => assert.match(markdown, /\]\(https:\/\/confluence\.score\/[^)]*\)/)]
+  ['absolute Confluence link', () => {
+    const linkDom = new JSDOM('<main><a href="/display/TEST/Page">페이지</a></main>', {
+      url: 'https://confluence.score/pages/viewpage.action'
+    });
+    const linkMarkdown = convertConfluenceHtml(
+      linkDom.window.document.querySelector('main'),
+      { document: linkDom.window.document }
+    );
+    assert.match(linkMarkdown, /\]\(https:\/\/confluence\.score\/display\/TEST\/Page\)/);
+    linkDom.window.close();
+  }],
+  ['JavaScript code cleanup', () => {
+    assert.match(markdown, /```js\nlet test = 'test'\n```/);
+  }],
+  ['Bash code cleanup', () => {
+    assert.match(markdown, /```bash\nls -la\n```/);
+  }],
+  ['no code UI artifacts', () => {
+    assert.doesNotMatch(markdown, /expand source/);
+    assert.doesNotMatch(markdown, /원본 펼치기/);
+    assert.doesNotMatch(markdown, /^\?$/m);
+  }],
+  ['nested task list', () => {
+    assert.match(markdown, /\n- \[ \] 작업목록2\n    - \[ \] 작업목록 들여쓰기\n/);
+  }],
+  ['no source footer', () => {
+    assert.doesNotMatch(markdown, /\[Confluence 원문\]/);
+  }]
 ];
 
 for (const [name, check] of checks) {

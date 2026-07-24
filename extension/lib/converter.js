@@ -11,6 +11,25 @@
   'use strict';
 
   var CELL_BREAK = '\uE000';
+  var CODE_LANGUAGES = [
+    'applescript', 'as3', 'bash', 'c', 'clojure', 'cpp', 'csharp', 'css',
+    'delphi', 'diff', 'erl', 'erlang', 'groovy', 'java', 'javafx', 'js',
+    'json', 'kotlin', 'perl', 'php', 'plain', 'plaintext', 'powershell',
+    'python', 'ruby', 'rust', 'sass', 'scala', 'shell', 'sql', 'swift',
+    'text', 'typescript', 'vb', 'xml', 'yaml'
+  ];
+  var CODE_HEADER_LANGUAGES = {
+    'javascript': 'js',
+    'js': 'js',
+    'bash': 'bash',
+    'shell': 'bash',
+    'python': 'python',
+    'java': 'java',
+    'sql': 'sql',
+    'xml': 'xml',
+    'yaml': 'yaml',
+    'json': 'json'
+  };
 
   function replaceWithText(element, text, document) {
     element.replaceWith(document.createTextNode(text));
@@ -167,8 +186,27 @@
     var language = '';
     if (highlighter) {
       language = Array.from(highlighter.classList).find(function (name) {
-        return !['syntaxhighlighter', 'collapsed', 'nogutter', 'sh-midnight'].includes(name);
+        return CODE_LANGUAGES.includes(name.toLowerCase()) &&
+          !name.toLowerCase().startsWith('sh-');
       }) || '';
+    }
+    if (!language) {
+      var header = panel.querySelector('.codeHeader b');
+      var headerText = ((header && header.textContent) || '')
+        .toLowerCase()
+        .replace(/\s*-\s*collapsed\s*$/, '')
+        .trim();
+      language = CODE_HEADER_LANGUAGES[headerText] || '';
+    }
+
+    if (highlighter) {
+      highlighter.querySelectorAll(
+        '.toolbar, .expand-control, .collapse-source, ' +
+        'a.expandSource, a[class*="command_expand"], a[class*="command_collapse"], ' +
+        'span[class*="expand-control"], span[class*="collapse-control"]'
+      ).forEach(function (control) {
+        control.remove();
+      });
     }
 
     var lines = Array.from(panel.querySelectorAll('.syntaxhighlighter .line'));
@@ -176,7 +214,23 @@
       ? lines.map(function (line) { return line.textContent; }).join('\n')
       : ((panel.querySelector('.codeContent, pre, code') || panel).textContent || '');
 
-    return { language: language, code: code.replace(/\u00a0/g, ' ').trimEnd() };
+    var codeLines = code.replace(/\u00a0/g, ' ').split('\n');
+    while (codeLines.length && !codeLines[0].trim()) codeLines.shift();
+    while (codeLines.length && !codeLines[codeLines.length - 1].trim()) codeLines.pop();
+    var commonIndent = codeLines.reduce(function (minimum, line) {
+      if (!line.trim()) return minimum;
+      var indent = (line.match(/^[ \t]*/) || [''])[0].length;
+      return minimum === null ? indent : Math.min(minimum, indent);
+    }, null) || 0;
+    if (commonIndent) {
+      codeLines = codeLines.map(function (line) {
+        return line.slice(commonIndent);
+      });
+    }
+    return {
+      language: language.toLowerCase(),
+      code: codeLines.join('\n')
+    };
   }
 
   function normalizeCodePanels(root, document) {
@@ -278,13 +332,34 @@
     var gfm = gfmPlugin && (gfmPlugin.gfm || gfmPlugin);
     if (typeof gfm === 'function') service.use(gfm);
 
-    service.addRule('confluenceTaskItem', {
+    service.addRule('confluenceTaskList', {
       filter: function (node) {
-        return node.nodeName === 'LI' && node.hasAttribute('data-confluence-task');
+        return node.nodeName === 'UL' &&
+          node.classList.contains('inline-task-list') &&
+          !(node.parentElement &&
+            node.parentElement.matches('li[data-confluence-task]'));
       },
-      replacement: function (content, node) {
-        var checked = node.getAttribute('data-confluence-task');
-        return '\n- [' + checked + '] ' + content.trim() + '\n';
+      replacement: function (_content, node) {
+        function serialize(list, depth) {
+          return Array.from(list.children).filter(function (child) {
+            return child.matches('li[data-confluence-task]');
+          }).map(function (item) {
+            var checked = item.getAttribute('data-confluence-task');
+            var label = Array.from(item.childNodes).filter(function (child) {
+              return !(child.nodeType === 1 &&
+                (child.tagName === 'UL' || child.tagName === 'OL'));
+            }).map(function (child) {
+              return child.textContent || '';
+            }).join('').replace(/\s+/g, ' ').trim();
+            var line = '    '.repeat(depth) + '- [' + checked + '] ' + label;
+            var nested = Array.from(item.children).find(function (child) {
+              return child.tagName === 'UL' &&
+                child.classList.contains('inline-task-list');
+            });
+            return nested ? line + '\n' + serialize(nested, depth + 1) : line;
+          }).join('\n');
+        }
+        return '\n' + serialize(node, 0) + '\n';
       }
     });
     service.addRule('confluenceStatus', {
@@ -304,13 +379,6 @@
     markdown = markdown.split('\n').map(function (line) {
       return /^\|.*\|$/.test(line) ? line.replace(/ {2,}/g, '  ') : line;
     }).join('\n');
-    if (
-      document.baseURI &&
-      /^https?:\/\//i.test(document.baseURI) &&
-      !/\]\(https?:\/\/[^)]+\)/i.test(markdown)
-    ) {
-      markdown += '\n\n[Confluence 원문](' + document.baseURI + ')';
-    }
     return markdown + '\n';
   }
 
