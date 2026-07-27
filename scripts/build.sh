@@ -8,5 +8,6 @@ mkdir -p extension/lib
 cp node_modules/turndown/dist/turndown.js extension/lib/turndown.js
 cp node_modules/turndown-plugin-gfm/dist/turndown-plugin-gfm.js extension/lib/turndown-plugin-gfm.js
 cp src/converter.js extension/lib/converter.js
+cp src/version.js extension/lib/version.js
 
 echo "Build complete: extension/lib"

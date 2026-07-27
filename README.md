@@ -16,13 +16,14 @@ Confluence 페이지에서 툴바의 확장 아이콘을 클릭하면 `{페이�
 
 ## 업데이트
 
-저장소에서 `git pull`을 실행한 뒤 `chrome://extensions`에서 Confluence Markdown 확장의 새로고침(↻) 버튼을 클릭합니다.
+새 버전이 배포되면 확장 아이콘에 `NEW` 배지가 표시됩니다. 저장소에서 `git pull`을 실행한 뒤 `chrome://extensions`에서 Confluence Markdown 확장의 새로고침(↻) 버튼을 클릭하면 설치 버전이 최신 버전과 일치하면서 배지가 사라집니다.
 
 ## 동작 방식
 
 - 페이지의 `#main-content` 영역만 파싱합니다.
 - 전 과정을 브라우저 안에서 로컬로 변환합니다.
-- 페이지 내용을 외부 서버로 전송하지 않습니다.
+- 업데이트 확인을 위해 `raw.githubusercontent.com`의 `publish/latest.json`만 조회합니다.
+- 페이지 내용은 어떤 서버로도 전송하지 않습니다.
 - 이미지와 첨부 파일은 LLM 컨텍스트에 불필요하므로 의도적으로 제외합니다.
 
 ## 변환 지원 범위
