@@ -1,6 +1,6 @@
 {
-  "version": "1.4.3",
-  "published_at": "2026-07-27T21:31:22+09:00",
-  "zip": "publish/confluence-md-1.4.3.zip",
-  "notes": "리로드 직후 좌클릭 오류 수정 (콘텐츠 스크립트 자동 재주입)"
+  "version": "1.4.4",
+  "published_at": "2026-07-27T21:37:35+09:00",
+  "zip": "publish/confluence-md-1.4.4.zip",
+  "notes": "업데이트 적용 안내 가시화 (메뉴 문구 + 배지)"
 }

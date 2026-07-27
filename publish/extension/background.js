@@ -52,7 +52,7 @@ chrome.runtime.onInstalled.addListener(function () {
   chrome.contextMenus.removeAll(function () {
     chrome.contextMenus.create({
       id: 'update-now',
-      title: '지금 업데이트 (git pull + 리로드)',
+      title: '지금 업데이트 — 완료 후 열리는 페이지에서 ↻ 새로고침',
       contexts: ['action']
     });
     chrome.contextMenus.create({
@@ -123,6 +123,11 @@ chrome.contextMenus.onClicked.addListener(function (info) {
       } catch (_error) {
         // 알림 실패와 관계없이 적용 안내와 자동 리로드를 계속한다.
       }
+      chrome.action.setBadgeText({ text: '↻' });
+      chrome.action.setBadgeBackgroundColor({ color: '#188038' });
+      chrome.action.setTitle({
+        title: '업데이트 다운로드 완료 — 확장 관리 페이지에서 새로고침(↻)을 누르면 적용됩니다.'
+      });
       chrome.tabs.create({
         url: 'chrome://extensions/?id=' + chrome.runtime.id
       });
