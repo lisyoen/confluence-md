@@ -8,12 +8,11 @@ const { convertConfluenceHtml } = require('../src/converter');
 const projectDir = path.join(__dirname, '..');
 fs.mkdirSync(path.join(projectDir, 'work-samples'), { recursive: true });
 [
-  ['Confluence.html', 'Confluence.md', '362457980'],
-  ['진짜 사내 담당자 - Confluence.html', '진짜 사내 담당자.md', '309829386']
-].forEach(([input, output, pageId]) => {
-  const html = fs.readFileSync(path.join(projectDir, 'samples', input), 'utf8');
+  ['sample-confluence.html', 'sample-confluence.md']
+].forEach(([input, output]) => {
+  const html = fs.readFileSync(path.join(projectDir, 'tests', 'fixtures', input), 'utf8');
   const dom = new JSDOM(html, {
-    url: `https://confluence.score/pages/viewpage.action?pageId=${pageId}`
+    url: 'https://confluence.score/pages/viewpage.action'
   });
   const mainContent = dom.window.document.querySelector('#main-content');
   if (!mainContent) throw new Error(`#main-content not found in ${input}`);

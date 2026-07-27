@@ -10,9 +10,9 @@ const {
   sanitizeFilename
 } = require('../src/converter');
 
-const samplePath = path.join(__dirname, '..', 'samples', 'Confluence.html');
+const samplePath = path.join(__dirname, 'fixtures', 'sample-confluence.html');
 const html = fs.readFileSync(samplePath, 'utf8');
-const dom = new JSDOM(html, { url: 'https://confluence.score/pages/viewpage.action?pageId=362457980' });
+const dom = new JSDOM(html, { url: 'https://confluence.score/pages/viewpage.action' });
 const mainContent = dom.window.document.querySelector('#main-content');
 assert(mainContent, '#main-content should exist in sample');
 
@@ -68,48 +68,36 @@ for (const [name, check] of checks) {
   console.log(`PASS ${name}`);
 }
 console.log(`PASS all ${checks.length} checks`);
-dom.window.close();
 
-const realHtml = fs.readFileSync(
-  path.join(__dirname, '..', 'samples', '진짜 사내 담당자 - Confluence.html'),
-  'utf8'
-);
-const realDom = new JSDOM(realHtml, {
-  url: 'https://confluence.score/pages/viewpage.action?pageId=309829386'
-});
-const realDocument = realDom.window.document;
-const realMainContent = realDocument.querySelector('#main-content');
-assert(realMainContent, '#main-content should exist in real sample');
-const realMarkdown = convertConfluenceHtml(realMainContent, { document: realDocument });
-const realChecks = [
-  ['clean real filename', () => {
-    assert.strictEqual(sanitizeFilename(extractTitle(realDocument)), '진짜 사내 담당자');
+const fixtureChecks = [
+  ['clean fixture filename', () => {
+    assert.strictEqual(sanitizeFilename(extractTitle(dom.window.document)), '샘플 문서');
   }],
   ['single-line table rows', () => {
-    const tableRows = realMarkdown.match(/^\|.*\|$/gm) || [];
+    const tableRows = markdown.match(/^\|.*\|$/gm) || [];
     assert(tableRows.length > 0);
     tableRows.forEach((row) => assert.doesNotMatch(row, /[\r\n]/));
   }],
   ['tablesorter header', () => {
-    assert.match(realMarkdown, /^\|\s*담당자\s*\|\s*업무\s*\|\s*비고\s*\|$/m);
+    assert.match(markdown, /^\|\s*담당자\s*\|\s*업무\s*\|\s*비고\s*\|$/m);
   }],
-  ['multi-block business cell', () => {
-    assert.match(realMarkdown, /^\|\s*국찬양\s*\|[^\r\n]*ESCORT[^\r\n]*NASCA[^\r\n]*\|/m);
+  ['multi-block example cell', () => {
+    assert.match(markdown, /^\|\s*홍길동\s*\|[^\r\n]*예시 설계[^\r\n]*문서 검토[^\r\n]*\|/m);
   }],
   ['mailto link', () => {
-    assert.match(realMarkdown, /\]\(mailto:vdiservice@samsung\.com\)/);
+    assert.match(markdown, /\]\(mailto:owner@example\.com\)/);
   }],
   ['info macro blockquote', () => {
-    assert.match(realMarkdown, /^>\s+.*결재 라인의 합의자에게 문의.*$/m);
+    assert.match(markdown, /^>\s+.*예시 승인 담당자에게 문의.*$/m);
   }],
   ['no tablesorter markup', () => {
-    assert.doesNotMatch(realMarkdown, /headerButton|tablesorter/i);
+    assert.doesNotMatch(markdown, /headerButton|tablesorter/i);
   }]
 ];
-for (const [name, check] of realChecks) {
+for (const [name, check] of fixtureChecks) {
   check();
   console.log(`PASS ${name}`);
 }
-console.log(`PASS all ${realChecks.length} real-sample checks`);
-realDom.window.close();
+console.log(`PASS all ${fixtureChecks.length} fixture checks`);
+dom.window.close();
 process.exit(0);
