@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Confluence Markdown",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0bRrd7AP3/Tojcql/aPvshG9vAplCt4MHQ6HfZEaH3B8JEqhxtwrGPEqJwZMdiM6m98+Bfcsisou4w9LFO1brMrXJ+Kx2cO3Sjpoc1eG0SvgLY4mz3JOEEW8z6L6RvpyXQWHcGLCmgzCTc0wlwJwet3qusS6OMVuFVwpTiFfUw/B9Q+Jp6Zv8w/HL1YmScqXLPhZ6Sf/bhsfB5AfG0rdw6meMe0s2BcRcHHbJfs1kuRRSvvaBla5jn8bKWIzWEPDzFFCarB+5Unsg5cZyV9uPIpE6tlIiiGnXcBJFHvJj83N+caqfcUkLvR9X4sSdubOoil9VpUn6z71YyNiizOGBwIDAQAB",
   "description": "Confluence 본문을 LLM 컨텍스트용 Markdown으로 다운로드합니다.",
   "permissions": [

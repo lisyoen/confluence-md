@@ -95,7 +95,17 @@ chrome.contextMenus.onClicked.addListener(function (info) {
         var output = response && response.output
           ? String(response.output).slice(-300)
           : '응답이 없습니다.';
-        notify('업데이트 실패: ' + output);
+        try {
+          notify(
+            '업데이트 실패: ' + output +
+            ' — 파일은 이미 갱신됐을 수 있으니 확장 관리 페이지에서 새로고침을 확인해 주세요.'
+          );
+        } catch (_error) {
+          // 알림 실패와 관계없이 확장 관리 페이지를 연다.
+        }
+        chrome.tabs.create({
+          url: 'chrome://extensions/?id=' + chrome.runtime.id
+        });
         return;
       }
 
@@ -105,10 +115,20 @@ chrome.contextMenus.onClicked.addListener(function (info) {
         return;
       }
 
-      notify('업데이트 완료. 확장을 다시 로드합니다.');
+      try {
+        notify(
+          '업데이트 다운로드 완료. 확장 관리 페이지에서 이 확장의 ' +
+          '새로고침(↻)을 누르면 적용됩니다. 자동 적용을 시도합니다.'
+        );
+      } catch (_error) {
+        // 알림 실패와 관계없이 적용 안내와 자동 리로드를 계속한다.
+      }
+      chrome.tabs.create({
+        url: 'chrome://extensions/?id=' + chrome.runtime.id
+      });
       setTimeout(function () {
         chrome.runtime.reload();
-      }, 1000);
+      }, 1500);
     }
   );
 });

@@ -48,7 +48,8 @@ try {
     }
 
     $repoRoot = Split-Path -Parent $PSScriptRoot
-    $gitOutput = & git -C $repoRoot pull --ff-only 2>&1
+    # PS5.1 EAP=Stop + native stderr = NativeCommandError. git 판정은 exit code 로만.
+    $gitOutput = & cmd /c "git -C `"$repoRoot`" pull --ff-only 2>&1"
     $exitCode = $LASTEXITCODE
     $output = ($gitOutput | Out-String).Trim()
     if ($output.Length -gt 500) {
