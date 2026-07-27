@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Confluence Markdown",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Confluence 본문을 LLM 컨텍스트용 Markdown으로 다운로드합니다.",
   "permissions": ["activeTab", "alarms"],
   "host_permissions": ["https://raw.githubusercontent.com/*"],
