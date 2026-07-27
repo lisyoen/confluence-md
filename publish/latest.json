@@ -1,6 +1,6 @@
 {
-  "version": "1.2.0",
-  "published_at": "2026-07-27T16:03:08+09:00",
-  "zip": "publish/confluence-md-1.2.0.zip",
-  "notes": "배지 표시 확인용 테스트 릴리스"
+  "version": "1.3.0",
+  "published_at": "2026-07-27T16:40:47+09:00",
+  "zip": "publish/confluence-md-1.3.0.zip",
+  "notes": "우클릭 원클릭 업데이트(Native Messaging) 추가"
 }

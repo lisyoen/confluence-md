@@ -8,3 +8,4 @@ build/
 samples/
 work-samples/
 publish/*.zip.tmp
+updater/host-manifest.json
