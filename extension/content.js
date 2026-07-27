@@ -1,6 +1,9 @@
 (function () {
   'use strict';
 
+  if (window.__confluenceMdListenerAttached) { return; }
+  window.__confluenceMdListenerAttached = true;
+
   chrome.runtime.onMessage.addListener(function (message) {
     if (!message || message.type !== 'download-confluence-markdown') return;
 

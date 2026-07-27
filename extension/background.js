@@ -133,10 +133,42 @@ chrome.contextMenus.onClicked.addListener(function (info) {
   );
 });
 
-chrome.action.onClicked.addListener(function (tab) {
+function sendDownloadMessage(tabId) {
+  return chrome.tabs.sendMessage(tabId, {
+    type: 'download-confluence-markdown'
+  });
+}
+
+chrome.action.onClicked.addListener(async function (tab) {
   checkForUpdate();
   if (!tab.id) return;
-  chrome.tabs.sendMessage(tab.id, { type: 'download-confluence-markdown' }).catch(function (error) {
+  if (!tab.url || !tab.url.startsWith('https://confluence.score/')) {
+    notify('컨플루언스 페이지에서 사용해 주세요.');
+    return;
+  }
+
+  try {
+    await sendDownloadMessage(tab.id);
+    return;
+  } catch (error) {
     console.error('Confluence Markdown 메시지 전송 실패:', error);
-  });
+  }
+
+  try {
+    await chrome.scripting.executeScript({
+      target: { tabId: tab.id },
+      files: [
+        'lib/turndown.js',
+        'lib/turndown-plugin-gfm.js',
+        'lib/converter.js',
+        'content.js'
+      ]
+    });
+    await sendDownloadMessage(tab.id);
+  } catch (error) {
+    console.error('Confluence Markdown 재연결 실패:', error);
+    notify(
+      '페이지와 연결할 수 없습니다. 해당 탭을 새로고침(F5)한 뒤 다시 시도해 주세요.'
+    );
+  }
 });
