@@ -1,6 +1,6 @@
 {
-  "version": "1.3.0",
-  "published_at": "2026-07-27T16:40:47+09:00",
-  "zip": "publish/confluence-md-1.3.0.zip",
-  "notes": "우클릭 원클릭 업데이트(Native Messaging) 추가"
+  "version": "1.4.0",
+  "published_at": "2026-07-27T20:59:17+09:00",
+  "zip": "publish/confluence-md-1.4.0.zip",
+  "notes": "우클릭 릴리즈노트 보기 메뉴 추가"
 }

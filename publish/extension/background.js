@@ -55,6 +55,11 @@ chrome.runtime.onInstalled.addListener(function () {
       title: '지금 업데이트 (git pull + 리로드)',
       contexts: ['action']
     });
+    chrome.contextMenus.create({
+      id: 'release-notes',
+      title: '릴리즈노트 보기',
+      contexts: ['action']
+    });
   });
 });
 chrome.runtime.onStartup.addListener(startUpdateChecks);
@@ -64,6 +69,13 @@ chrome.alarms.onAlarm.addListener(function (alarm) {
 });
 
 chrome.contextMenus.onClicked.addListener(function (info) {
+  if (info.menuItemId === 'release-notes') {
+    chrome.tabs.create({
+      url: 'https://github.com/lisyoen/confluence-md/releases'
+    });
+    return;
+  }
+
   if (info.menuItemId !== 'update-now') return;
 
   chrome.runtime.sendNativeMessage(

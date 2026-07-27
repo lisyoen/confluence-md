@@ -21,6 +21,8 @@ Confluence 페이지에서 툴바의 확장 아이콘을 클릭하면 `{페이�
 - **권장(최초 1회 등록):** clone 폴더의 `updater\install-updater.bat`을 더블클릭합니다. 이후 배지가 뜨면 확장 아이콘을 **우클릭 → 지금 업데이트**하면 `git pull`과 확장 다시 로드가 한 번에 완료됩니다.
 - **수동:** 저장소에서 `git pull`을 실행한 뒤 `chrome://extensions`에서 Confluence Markdown 확장의 새로고침(↻) 버튼을 클릭하는 기존 방식도 계속 사용할 수 있습니다.
 
+아이콘 **우클릭 → 릴리즈노트 보기**에서 버전별 변경 내역(GitHub Releases)을 확인할 수 있습니다.
+
 ## 동작 방식
 
 - 페이지의 `#main-content` 영역만 파싱합니다.
