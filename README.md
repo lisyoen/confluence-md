@@ -1,5 +1,9 @@
 # confluence-md
 
+confluence-md is a Chrome extension that converts the main content of a Confluence page into Markdown suitable for LLM context. Conversion happens locally in your browser, and page content is not sent to a server. The project is MIT licensed.
+
+English summary above / 상세 문서는 한국어
+
 Confluence 본문을 LLM 컨텍스트에 적합한 Markdown으로 추출하는 Chrome 확장입니다. 페이지에서 필요한 본문만 로컬에서 변환해 파일로 내려받습니다.
 
 ## 설치
@@ -65,3 +69,11 @@ npm run publish
 이 확장은 manifest에 지정된 대상 호스트와 연결되는 사내망 환경에서만 동작합니다. 생성된 Markdown에도 문서 내용이 포함되므로 외부 반출이나 공유가 발생하지 않도록 사용자가 산출물을 주의해서 취급해야 합니다.
 
 v1.3.0부터 확장 ID가 고정됩니다. 기존 설치 사용자는 업데이트 후 툴바의 확장 아이콘 고정(핀)이 풀릴 수 있으므로 필요한 경우 다시 고정해 주세요.
+
+## License
+
+[MIT License](LICENSE)로 배포되며 상용 이용이 가능합니다. 번들된 서드파티 소프트웨어의 라이선스는 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)를 참고하세요.
+
+## Contributing
+
+기여 방법은 [CONTRIBUTING.md](CONTRIBUTING.md)를 참고하세요.
