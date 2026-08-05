@@ -5,7 +5,7 @@
   "main": "src/converter.js",
   "scripts": {
     "build": "bash scripts/build.sh",
-    "test": "node tests/converter.test.js && node tests/version.test.js",
+    "test": "node tests/converter.test.js && node tests/version.test.js && node tests/comments.test.js",
     "publish": "bash scripts/publish.sh",
     "healthcheck": "bash scripts/healthcheck.sh"
   },

@@ -1,6 +1,6 @@
 {
-  "version": "1.4.4",
-  "published_at": "2026-07-27T21:37:35+09:00",
-  "zip": "publish/confluence-md-1.4.4.zip",
-  "notes": "업데이트 적용 안내 가시화 (메뉴 문구 + 배지)"
+  "version": "1.5.0",
+  "published_at": "2026-08-05T16:54:55+09:00",
+  "zip": "publish/confluence-md-1.5.0.zip",
+  "notes": "우클릭 컨텍스트 메뉴 '댓글 포함 다운로드' 추가: 푸터·인라인·답글 전체 포함"
 }

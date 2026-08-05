@@ -51,6 +51,12 @@ chrome.runtime.onInstalled.addListener(function () {
   startUpdateChecks();
   chrome.contextMenus.removeAll(function () {
     chrome.contextMenus.create({
+      id: 'download-with-comments',
+      title: '댓글 포함 다운로드',
+      contexts: ['page', 'action'],
+      documentUrlPatterns: ['https://confluence.score/*']
+    });
+    chrome.contextMenus.create({
       id: 'update-now',
       title: '지금 업데이트 — 완료 후 열리는 페이지에서 ↻ 새로고침',
       contexts: ['action']
@@ -68,7 +74,11 @@ chrome.alarms.onAlarm.addListener(function (alarm) {
   if (alarm.name === 'update-check') checkForUpdate();
 });
 
-chrome.contextMenus.onClicked.addListener(function (info) {
+chrome.contextMenus.onClicked.addListener(function (info, tab) {
+  if (info.menuItemId === 'download-with-comments') {
+    ensureDownload(tab, true);
+    return;
+  }
   if (info.menuItemId === 'release-notes') {
     chrome.tabs.create({
       url: 'https://github.com/lisyoen/confluence-md/releases'
@@ -138,22 +148,23 @@ chrome.contextMenus.onClicked.addListener(function (info) {
   );
 });
 
-function sendDownloadMessage(tabId) {
+function sendDownloadMessage(tabId, includeComments) {
   return chrome.tabs.sendMessage(tabId, {
-    type: 'download-confluence-markdown'
+    type: 'download-confluence-markdown',
+    includeComments: includeComments === true
   });
 }
 
-chrome.action.onClicked.addListener(async function (tab) {
+async function ensureDownload(tab, includeComments) {
   checkForUpdate();
-  if (!tab.id) return;
+  if (!tab || !tab.id) return;
   if (!tab.url || !tab.url.startsWith('https://confluence.score/')) {
     notify('컨플루언스 페이지에서 사용해 주세요.');
     return;
   }
 
   try {
-    await sendDownloadMessage(tab.id);
+    await sendDownloadMessage(tab.id, includeComments);
     return;
   } catch (error) {
     console.error('Confluence Markdown 메시지 전송 실패:', error);
@@ -166,14 +177,19 @@ chrome.action.onClicked.addListener(async function (tab) {
         'lib/turndown.js',
         'lib/turndown-plugin-gfm.js',
         'lib/converter.js',
+        'lib/comments.js',
         'content.js'
       ]
     });
-    await sendDownloadMessage(tab.id);
+    await sendDownloadMessage(tab.id, includeComments);
   } catch (error) {
     console.error('Confluence Markdown 재연결 실패:', error);
     notify(
       '페이지와 연결할 수 없습니다. 해당 탭을 새로고침(F5)한 뒤 다시 시도해 주세요.'
     );
   }
+}
+
+chrome.action.onClicked.addListener(function (tab) {
+  ensureDownload(tab, false);
 });

@@ -1,0 +1,8 @@
+{
+  "results": [
+    {"id":"reply-1","history":{"createdBy":{"displayName":"답글 작성자"},"createdDate":"2026-08-05T10:30:00+09:00"},"extensions":{"location":"footer"},"body":{"view":{"value":"<p><strong>답글</strong> 내용</p>"}},"ancestors":[{"id":"page-1","type":"page"},{"id":"top-1","type":"comment"}]},
+    {"id":"top-2","history":{"createdBy":{"displayName":"두 번째"},"createdDate":"2026-08-05T11:00:00+09:00"},"extensions":{"location":"footer"},"body":{"view":{"value":"<p>나중 댓글</p>"}},"ancestors":[{"id":"page-1","type":"page"}]},
+    {"id":"inline-1","history":{"createdBy":{"displayName":"인라인 작성자"},"createdDate":"2026-08-05T09:30:00+09:00"},"extensions":{"location":"inline"},"body":{"view":{"value":"<em>인라인 본문</em>"}},"ancestors":[{"id":"page-1","type":"page"}]},
+    {"id":"top-1","history":{"createdBy":{"displayName":"첫 번째"},"createdDate":"2026-08-05T10:00:00+09:00"},"body":{"view":{"value":"<p>부모 본문</p>"}},"ancestors":[{"id":"page-1","type":"page"}]}
+  ]
+}
