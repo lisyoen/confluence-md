@@ -52,7 +52,7 @@
 
   function isBlockElement(node) {
     return node.nodeType === 1 &&
-      ['P', 'DIV', 'UL', 'OL', 'LI', 'BR'].includes(node.tagName);
+      ['P', 'DIV', 'UL', 'OL', 'LI', 'BR', 'PRE'].includes(node.tagName);
   }
 
   function appendCellContent(source, target, document, listType, listIndex) {
@@ -120,6 +120,10 @@
 
   function normalizeTables(root, document) {
     root.querySelectorAll('table').forEach(function (table) {
+      if (table.closest('.syntaxhighlighter, .code.panel, [data-macro-name="code"], pre')) {
+        return;
+      }
+
       Array.from(table.querySelectorAll('thead')).forEach(function (header) {
         if (/display\s*:\s*none/i.test(header.getAttribute('style') || '')) header.remove();
       });
@@ -209,7 +213,10 @@
       });
     }
 
-    var lines = Array.from(panel.querySelectorAll('.syntaxhighlighter .line'));
+    var lines = Array.from(panel.querySelectorAll('.syntaxhighlighter td.code .line'));
+    if (!lines.length) {
+      lines = Array.from(panel.querySelectorAll('.syntaxhighlighter .line'));
+    }
     var code = lines.length
       ? lines.map(function (line) { return line.textContent; }).join('\n')
       : ((panel.querySelector('.codeContent, pre, code') || panel).textContent || '');
@@ -271,8 +278,8 @@
       macro.replaceWith(blockquote);
     });
 
-    normalizeTables(root, document);
     normalizeCodePanels(root, document);
+    normalizeTables(root, document);
 
     root.querySelectorAll('.aui-lozenge').forEach(function (status) {
       var normalized = document.createElement('span');

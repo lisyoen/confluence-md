@@ -50,6 +50,31 @@ const checks = [
   ['Bash code cleanup', () => {
     assert.match(markdown, /```bash\nls -la\n```/);
   }],
+  ['multi-line SyntaxHighlighter code', () => {
+    const withoutTrailingSpaces = markdown.replace(/[ \t]+$/gm, '');
+    assert.match(
+      withoutTrailingSpaces,
+      /```java\naidlc\/spaces\/default\/intents\/260902-weather-widget\/\n├── aidlc-state\.md\n├── approvals-ledger\.md\n└── audit\n```/
+    );
+  }],
+  ['numbered SyntaxHighlighter code', () => {
+    assert.match(markdown, /```java\nclass Example \{\n  run\(\);\n\}\n```/);
+    assert.doesNotMatch(markdown, /```java\n1\n2\n3\n/);
+  }],
+  ['code panel inside table', () => {
+    const headingIndex = markdown.indexOf('## 표 안의 코드');
+    const nextHeadingIndex = markdown.indexOf('\n## ', headingIndex + 1);
+    const tableSection = markdown.slice(
+      headingIndex,
+      nextHeadingIndex === -1 ? markdown.length : nextHeadingIndex
+    );
+    const rows = tableSection.split('\n').filter((line) => /^\|/.test(line));
+    assert(rows.length >= 3);
+    rows.forEach((row) => {
+      assert(row.startsWith('|'));
+      assert(row.endsWith('|'));
+    });
+  }],
   ['no code UI artifacts', () => {
     assert.doesNotMatch(markdown, /expand source/);
     assert.doesNotMatch(markdown, /원본 펼치기/);
